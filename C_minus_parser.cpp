@@ -12,7 +12,6 @@
 #include<cstdio>
 #include<map>
 #include<set>
-#include<typeinfo>
 #include<cstring>
 # define nonterminal_num 45
 # define terminal_num 31
@@ -226,9 +225,6 @@ void MonoDevelop::preSolve(char* str, int len){
 	// cout<<"after: "<<code_table[code_len-1]<<endl;
 	code_table[code_len]='\0';
 	
-//	for(int i=0;i<code_len;i++){
-//		cout<<(int)code_table[i]<<" ";
-//	}
 }
 
 
@@ -388,23 +384,8 @@ void MonoDevelop::lexProgress(const string path){
 //			cout<<str_word<<endl;
 			waiting_input.push_back(str_word);
 		}
-		// cout<<"id: "<<id<<endl;
-		// system("pause");
-	}
 	
-//	fstream outfile("nonterminal.txt");
-//	
-//	if(!outfile.is_open()){
-//		cout<<"outfile fails to open"<<endl;
-//		exit(0);
-//	}else{
-//		vector<string>::iterator it;
-//		for(it = waiting_input.begin(); it != waiting_input.end(); it++){
-//			outfile<<*it<<" ";
-//		}
-//		
-//		outfile.close();
-//	}
+	}
 	
 }
 
@@ -473,8 +454,6 @@ char* MonoDevelop::nonterminal_table[]={
 
 void MonoDevelop::initGenerative(){
 	ifstream fin("grammar.txt", ios::in);
-//	fstream fou("outgrammar.txt", ios::out);
-//	set<string> hash_table;
 	int cnt=0;
 	char* pch;
 	const char * split = " "; // 空格是分隔符
@@ -489,8 +468,6 @@ void MonoDevelop::initGenerative(){
 			pch = strtok(str, split);
 			string sc(pch);
 			generates[cnt].left = sc;
-//			hash_table.insert(sc);
-//			cout<<generates[cnt].left<<"  "<<cnt<<endl;
 			pch = strtok(NULL, split); // ->
 			pch = strtok(NULL, split); // start right
 			while(pch != NULL) {
@@ -501,9 +478,7 @@ void MonoDevelop::initGenerative(){
 					generates[cnt].left = generates[cnt-1].left;
 					
 				}else{
-					
 					generates[cnt].right.push_back(pch);
-//					cout<<generates[cnt].right[i]<<endl;
 				}
 		    	pch = strtok(NULL, split);  // 注意这里是NULL
 		    }
@@ -513,28 +488,7 @@ void MonoDevelop::initGenerative(){
 		fin.close(); 
 	}
 	generation_len = cnt;
-	
-	/*output LL1 nonterminal symbol*/ 
-//	cout<<"cnt: "<<cnt<<endl;
-//	if (!fou.is_open()){
-//		cout<<"打开输出文件失败"<<endl;
-//		exit(0);
-//	}
-//	set<string>::iterator it;
-//	for(it = hash_table.begin(); it != hash_table.end(); it++){
-//		fou<<*it<<endl;
-//	}
-//	fou.close();
-	
-//	cout<<"left_count: "<<hash_table.size()<<endl;
-//	cout<<"--------------------------"<<endl;
-//	for(int i=0;i<cnt;i++){
-//		cout<<"left:  "<<generates[i].left<<endl;//<<"+"<<generates[i].right.at(0)<<endl;
-//		for(int j=0;j<generates[i].right.size();j++)
-//			cout<<generates[i].right[j];
-//		cout<<endl;
-//	}
-//	cout<<<<endl;
+
 }
 
 bool MonoDevelop::isNonterminal(string s){
@@ -571,7 +525,6 @@ int MonoDevelop::getNonterminalIndex(string str){
 void MonoDevelop::constructFirst(string target){
 	int target_pos = getNonterminalIndex(target); // 获取非终结符位置在表中位置 
 //	cout<<"target: "<<target<<"  "<<"pos: "<<target_pos<<endl;
-//	system("pause");
 	for(int i=0;i<generation_len;i++){
 		if(generates[i].left == target){
 			if(!isNonterminal(generates[i].right[0])){ // 如果是终结符，直接加入集合 
@@ -630,15 +583,7 @@ void MonoDevelop::constructFollow(string target){
 		}
 		
 		if(tar_in_gene_pos == -1)continue;
-		
-//		cout<<"target: "<<target<<endl;
-//		cout<<generates[i].left<<" -> ";
-//		for(int j=0;j<generates[i].right.size();j++)
-//			cout<<generates[i].right[j]<<" ";
-//		cout<<endl;
-//		system("pause");
-//		
-		
+				
 		if(tar_in_gene_pos < len - 1){
 			
 			// 所在产生式形如A->aBc，则First(c)中除了empty元素都加入Follow(B)中
@@ -650,42 +595,17 @@ void MonoDevelop::constructFollow(string target){
 				int tar_next_pos = getNonterminalIndex(tar_next);
 				int have_empty = 0;
 				
-//				if(target == "local-declarations"){
-//				cout<<"i: "<<i<<endl;
-//				cout<<"tar_pos:  "<<tar_in_gene_pos<<endl;
-//				cout<<"next_pos:  "<<tar_next<<endl;
-//				system("pause");
-//				}
-				
 				set<string>::iterator it;
 				for(it = first[tar_next_pos].begin(); it != first[tar_next_pos].end(); it++){
-//					if(target == "addop"){
-//						cout<<*it<<"  "<<endl;
-//					}
 					if(*it == "empty"){
 						have_empty = 1;
-//						if(target == "local-declarations"){
-//							cout<<"YES"<<endl;
-//							system("pause");
-//						}
 					}else{
 						follow[target_pos].insert(*it);
-//						if(target == "local-declarations"){
-//							cout<<"it:  "<<*it<<endl;
-//							system("pause");
-//							cout<<"---------------------"<<endl;
-//						}
 					}
 				}
 				
 				// 如果存在empty，且 A!=B ??? 
 				if(have_empty && generates[i].left != target){
-					
-//					if(target == "local-declarations"){
-//							cout<<"( "<<generates[i].left<<" )"<<endl;
-//							system("pause");
-//							cout<<"---------------------"<<endl;
-//					}
 					
 					constructFollow(tar_next);  // 首先保证算出tar_next的Follow集合 
 					
@@ -693,11 +613,6 @@ void MonoDevelop::constructFollow(string target){
 					set<string>::iterator it;
 					for(it = follow[tar_next_pos].begin(); it != follow[tar_next_pos].end(); it++){
 							follow[target_pos].insert(*it);
-//							if(target == "local-declarations"){
-//							cout<<"( it: )  "<<*it<<endl;
-//							system("pause");
-//							cout<<"---------------------"<<endl;
-//						}
 					}
 				}
 				
@@ -737,12 +652,6 @@ void MonoDevelop::constructPredict(){
 				}else{
 					int r_pos = getTerminalIndex(r);
 					predict_table[left_pos][r_pos] = i;
-//					if(generates[i].left == "selection-stmt-1"){
-//					cout<<"i: "<<i<<endl;
-//					cout<<"r:  "<<r<<endl;
-//					cout<<"next_pos:  "<<tar_next<<endl;
-//					system("pause");
-//					}
 				}
 				break;
 			}else{
@@ -755,15 +664,9 @@ void MonoDevelop::constructPredict(){
 					if(sc == "empty"){
 						empty_num++;
 					}else{
-//						if(generates[i].left == "selection-stmt-1"){
-//							cout<<"i: "<<i<<endl;
-//							cout<<"it:  "<<sc<<endl;
-//							system("pause");
-//						}
+
 						int it_pos = getTerminalIndex(*it);
 						predict_table[left_pos][it_pos] = i;
-//						cout<<nonterminal_table[left_pos]<<"  "<<terminal_table[it_pos]<<endl;
-//						system("pause");
 					}
 				}
 				
