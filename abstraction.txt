@@ -1,0 +1,22 @@
+int ID ( int ID , int ID , int ID ) 
+{ int ID ; 
+if ( ID > ID ) { 
+	ID = ID ; 
+	if ( ID > ID ) { ID = ID ; } 
+} else { 
+	ID = ID ; 
+	if ( ID > ID ) { ID = ID ; } 
+	} 
+return ID ; 
+
+} 
+void ID ( void ) 
+{ 
+int ID ; 
+int ID ; 
+int ID ; 
+ID = ID ( ) ; 
+ID = ID ( ) ; 
+ID = ID ( ) ; 
+ID ( ID ( ID , ID , ID ) ) ; 
+} 
