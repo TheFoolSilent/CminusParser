@@ -1,0 +1,25 @@
+program->declaration-list 
+declaration-list->declaration declaration-list-1 
+declaration->type-specifier ID declaration-1 
+type-specifier->int 
+ID->gcd 
+declaration-1->( params ) compound-stmt 
+params->int ID param-1 param-list-1 
+ID->u 
+param-1->empty 
+param-list-1->, param param-list-1 
+param->type-specifier ID param-1 
+type-specifier->int 
+ID->v 
+param-1->empty 
+param-list-1->empty 
+compound-stmt->{ local-declarations statement-list } 
+local-declarations->local-declarations-1 
+local-declarations-1->empty 
+statement-list->statement-list-1 
+statement-list-1->statement statement-list-1 
+statement->selection-stmt 
+selection-stmt->if ( expression ) statement selection-stmt-1 
+expression->ID expression-1 
+ID->v 
+---------------ERROR!-----------------

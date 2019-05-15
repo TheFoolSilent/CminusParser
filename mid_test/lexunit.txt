@@ -1,0 +1,34 @@
+Reserve Word: int
+ID, name= gcd
+(
+Reserve Word: int
+ID, name= u
+,
+Reserve Word: int
+ID, name= v
+)
+{
+Reserve Word: if
+(
+ID, name= v
+NUM, val= 0
+)
+Reserve Word: return
+ID, name= u
+;
+Reserve Word: else
+Reserve Word: return
+ID, name= gcd
+(
+ID, name= v
+,
+ID, name= u
+-
+ID, name= u
+/
+ID, name= v
+*
+ID, name= v
+)
+;
+}

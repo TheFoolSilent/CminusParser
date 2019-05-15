@@ -1,0 +1,191 @@
+program->declaration-list 
+declaration-list->declaration declaration-list-1 
+declaration->type-specifier ID declaration-1 
+type-specifier->int 
+ID->gcd 
+declaration-1->( params ) compound-stmt 
+params->int ID param-1 param-list-1 
+ID->u 
+param-1->empty 
+param-list-1->, param param-list-1 
+param->type-specifier ID param-1 
+type-specifier->int 
+ID->v 
+param-1->empty 
+param-list-1->empty 
+compound-stmt->{ local-declarations statement-list } 
+local-declarations->local-declarations-1 
+local-declarations-1->empty 
+statement-list->statement-list-1 
+statement-list-1->statement statement-list-1 
+statement->selection-stmt 
+selection-stmt->if ( expression ) statement selection-stmt-1 
+expression->ID expression-1 
+ID->v 
+expression-1->var-1 expression-2 
+var-1->empty 
+expression-2->term-1 additive-expression-1 simple-expression-1 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->relop additive-expression 
+relop->== 
+additive-expression->term additive-expression-1 
+term->factor term-1 
+factor->NUM 
+NUM->0 
+term-1->empty 
+additive-expression-1->empty 
+statement->return-stmt 
+return-stmt->return return-stmt-1 
+return-stmt-1->expression ; 
+expression->ID expression-1 
+ID->u 
+expression-1->var-1 expression-2 
+var-1->empty 
+expression-2->term-1 additive-expression-1 simple-expression-1 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->empty 
+selection-stmt-1->else statement 
+statement->return-stmt 
+return-stmt->return return-stmt-1 
+return-stmt-1->expression ; 
+expression->ID expression-1 
+ID->gcd 
+expression-1->( args ) term-1 additive-expression-1 simple-expression-1 
+args->arg-list 
+arg-list->expression arg-list-1 
+expression->ID expression-1 
+ID->v 
+expression-1->var-1 expression-2 
+var-1->empty 
+expression-2->term-1 additive-expression-1 simple-expression-1 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->empty 
+arg-list-1->, expression arg-list-1 
+expression->ID expression-1 
+ID->u 
+expression-1->var-1 expression-2 
+var-1->empty 
+expression-2->term-1 additive-expression-1 simple-expression-1 
+term-1->empty 
+additive-expression-1->addop term additive-expression-1 
+addop->- 
+term->factor term-1 
+factor->ID factor-1 
+ID->u 
+factor-1->var-1 
+var-1->empty 
+term-1->mulop factor term-1 
+mulop->/ 
+factor->ID factor-1 
+ID->v 
+factor-1->var-1 
+var-1->empty 
+term-1->mulop factor term-1 
+mulop->* 
+factor->ID factor-1 
+ID->v 
+factor-1->var-1 
+var-1->empty 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->empty 
+arg-list-1->empty 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->empty 
+statement-list-1->empty 
+declaration-list-1->declaration declaration-list-1 
+declaration->type-specifier ID declaration-1 
+type-specifier->void 
+ID->main 
+declaration-1->( params ) compound-stmt 
+params->void params-1 
+params-1->empty 
+compound-stmt->{ local-declarations statement-list } 
+local-declarations->local-declarations-1 
+local-declarations-1->var-declaration local-declarations-1 
+var-declaration->type-specifier ID var-declaration-1 
+type-specifier->int 
+ID->x 
+var-declaration-1->; 
+local-declarations-1->var-declaration local-declarations-1 
+var-declaration->type-specifier ID var-declaration-1 
+type-specifier->int 
+ID->y 
+var-declaration-1->; 
+local-declarations-1->empty 
+statement-list->statement-list-1 
+statement-list-1->statement statement-list-1 
+statement->expression-stmt 
+expression-stmt->expression ; 
+expression->ID expression-1 
+ID->x 
+expression-1->var-1 expression-2 
+var-1->empty 
+expression-2->= expression 
+expression->ID expression-1 
+ID->input 
+expression-1->( args ) term-1 additive-expression-1 simple-expression-1 
+args->empty 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->empty 
+statement-list-1->statement statement-list-1 
+statement->expression-stmt 
+expression-stmt->expression ; 
+expression->ID expression-1 
+ID->y 
+expression-1->var-1 expression-2 
+var-1->empty 
+expression-2->= expression 
+expression->ID expression-1 
+ID->intput 
+expression-1->( args ) term-1 additive-expression-1 simple-expression-1 
+args->empty 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->empty 
+statement-list-1->statement statement-list-1 
+statement->expression-stmt 
+expression-stmt->expression ; 
+expression->ID expression-1 
+ID->output 
+expression-1->( args ) term-1 additive-expression-1 simple-expression-1 
+args->arg-list 
+arg-list->expression arg-list-1 
+expression->ID expression-1 
+ID->gcd 
+expression-1->( args ) term-1 additive-expression-1 simple-expression-1 
+args->arg-list 
+arg-list->expression arg-list-1 
+expression->ID expression-1 
+ID->x 
+expression-1->var-1 expression-2 
+var-1->empty 
+expression-2->term-1 additive-expression-1 simple-expression-1 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->empty 
+arg-list-1->, expression arg-list-1 
+expression->ID expression-1 
+ID->y 
+expression-1->var-1 expression-2 
+var-1->empty 
+expression-2->term-1 additive-expression-1 simple-expression-1 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->empty 
+arg-list-1->empty 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->empty 
+arg-list-1->empty 
+term-1->empty 
+additive-expression-1->empty 
+simple-expression-1->empty 
+statement-list-1->empty 
+declaration-list-1->empty 
+FINISHED: OK!

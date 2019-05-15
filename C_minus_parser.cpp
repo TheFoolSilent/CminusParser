@@ -4,7 +4,6 @@
 // 词法分析：350+
 // 语法分析：650+ 
 
-
 #include"Tree.h"
 #include<cstring>
 #include<fstream>
@@ -46,7 +45,7 @@ class MonoDevelop{
 		
 		vector<string> waiting_input;  // 非输入终结符化,等待分析的字符串  
 		// 预处理后的代码表
-		char* code_table;
+		vector<char> code_table;
 		
 		int code_len;
 		
@@ -80,12 +79,12 @@ class MonoDevelop{
 					stat_cycle[i][j]=0;
 					predict_table[i][j]=-1;
 				}
-					
+
 		}
 		/*语法部分*/ 
 		
 		// 读入产生式文件 
-		void initGenerative(); 
+		void initGenerative();
 		
 		// 判断是否为非终结符 
 		bool isNonterminal(string s);
@@ -141,6 +140,9 @@ class MonoDevelop{
 		
 		// 词法扫描程序
 		void lexScanner(int& id, int& pos, char* token, int& count);
+		
+		// 输出预处理后的Token流 
+		void printTokens(); 
 		
 		//  词法分析主处理函数 
 		void lexProgress(const string path);
@@ -200,7 +202,7 @@ bool MonoDevelop::isNum(char str){
 
 
 void MonoDevelop::preSolve(char* str, int len){
-	code_table = new char[1010];
+	// 去除注释与换行 
 	for(int i=0;i<len;i++){
 		if(str[i] == '/' && str[i+1] == '/' && i<len){
 			while(i!='\n'){
@@ -215,15 +217,13 @@ void MonoDevelop::preSolve(char* str, int len){
 				i++;
 			}
 		}else if(str[i]!='\n'&&str[i]!='\t'){
-			code_table[code_len++]=str[i];
+			code_table.push_back(str[i]);
+			code_len++;
 		}
 	}
-	// cout<<"before: "<<code_table[code_len-1]<<endl;
 	
-	code_table[code_len-1]='@';
-	
-	// cout<<"after: "<<code_table[code_len-1]<<endl;
-	code_table[code_len]='\0';
+	code_table.pop_back();
+	code_table.push_back('@');  // 插入结束符 
 	
 }
 
@@ -338,6 +338,7 @@ void MonoDevelop::lexScanner(int& id, int& pos, char* token, int& count){
 
 void MonoDevelop::lexProgress(const string path){
 	// char buffer[256];
+	
 	fstream file;
 	char* ch = new char[1000];
 	int cnt=0;
@@ -355,6 +356,12 @@ void MonoDevelop::lexProgress(const string path){
 		// cout<<"Prepared:\n"<<code_table<<endl;	
 	}
 	
+//	fstream fout("lexunit.txt", ios::out);
+//	if(!fout.is_open()){
+//		cout<<"词法单元输出文件打开出错"<<endl;
+//		exit(0);
+//	}
+	
 	int id=-1;
 	int pos=0;
 	
@@ -364,30 +371,51 @@ void MonoDevelop::lexProgress(const string path){
 		int word_len=0;
 		lexScanner(id,pos,str_word,word_len);
 		if(id == 100){ // 标识符 
-//			cout<<"ID, name= "<<str_word<<endl;
+//			fout<<"ID, name= "<<str_word<<endl;
 			Symbol bian;
 			bian.type = "ID";
 			bian.val = str_word;
 			symbol_table.push_back(bian);
 			waiting_input.push_back("ID");
 		}else if(id >= 0 && id <= 5){ // 保留字 
-//			cout<<"Reserve Word: "<<str_word<<endl;
+//			fout<<"Reserve Word: "<<str_word<<endl;
 			waiting_input.push_back(str_word);
 		}else if(id == 101){ // 常数 
-//			cout<<"NUM, val= "<<str_word<<endl;
+//			fout<<"NUM, val= "<<str_word<<endl;
 			waiting_input.push_back("NUM");
 			Symbol bian;
 			bian.type = "NUM";
 			bian.val = str_word;
 			symbol_table.push_back(bian);
 		}else if(id>5 && id<27){ // 运算与边界符 
-//			cout<<str_word<<endl;
+//			fout<<str_word<<endl;
 			waiting_input.push_back(str_word);
 		}
 	
 	}
 	
+	
 }
+
+
+void MonoDevelop::printTokens(){
+	fstream fout("precode.txt", ios::out);
+	if(!fout.is_open()){
+		cout<<"预处理后代码输出文件打开出错"<<endl;
+		exit(0);
+	}
+	vector<string>::iterator it;
+	vector<Symbol>::iterator sym;
+	sym = symbol_table.begin();
+	for(it = waiting_input.begin();it != waiting_input.end(); it++){
+		if(*it == "NUM" || *it == "ID"){
+			fout<<(*sym).val<<" ";
+			sym++;
+		}else fout<<*it<<" ";
+	}
+	fout.close();
+}
+
 
 /*语法部分*/ 
 
@@ -473,7 +501,7 @@ void MonoDevelop::initGenerative(){
 			while(pch != NULL) {
 //				cout<<"pch: "<<pch<<endl;
 				if(*pch == '|'){
-//					cout<<"ok"<<endl;
+
 					cnt++;
 					generates[cnt].left = generates[cnt-1].left;
 					
@@ -482,7 +510,7 @@ void MonoDevelop::initGenerative(){
 				}
 		    	pch = strtok(NULL, split);  // 注意这里是NULL
 		    }
-//		    system("pause");
+
 		    cnt++;
 		}
 		fin.close(); 
@@ -604,12 +632,11 @@ void MonoDevelop::constructFollow(string target){
 					}
 				}
 				
-				// 如果存在empty，且 A!=B ??? 
+				// 如果存在empty，且 A!=B
 				if(have_empty && generates[i].left != target){
 					
 					constructFollow(tar_next);  // 首先保证算出tar_next的Follow集合 
 					
-//					int left_pos = getNonterminalIndex(generates[i].left);
 					set<string>::iterator it;
 					for(it = follow[tar_next_pos].begin(); it != follow[tar_next_pos].end(); it++){
 							follow[target_pos].insert(*it);
@@ -645,7 +672,6 @@ void MonoDevelop::constructPredict(){
 		for(int j=0;j<right_len;j++){
 			string r = generates[i].right[j];
 			if(!isNonterminal(r)){	// 如果为终结符，直接放入，循环结束 
-//				cout<<"YES_1"<<endl;
 
 				if(r == "empty"){
 					empty_num++;
@@ -784,8 +810,9 @@ void MonoDevelop::syntaxAnalyzer(){
 		
 		}else if(!isNonterminal(stack_top)){  // 如果栈顶为终结符，则报错 
 //			cout<<"now_stacktop:  "<<stack_top<<"   input:  "<<input_string<<endl;
+			fou<<"---------------ERROR!-----------------"<<endl;
 			error();
-			return;
+			exit(0);
 		
 		}else if(predict_table[getNonterminalIndex(stack_top)][getTerminalIndex(input_string)] != -1){  // 预测分析表中有对应项 
 			int tag = predict_table[getNonterminalIndex(stack_top)][getTerminalIndex(input_string)];
@@ -821,8 +848,9 @@ void MonoDevelop::syntaxAnalyzer(){
 		}else{
 			
 //			cout<<"top1:  "<<stack_top<<"   input:  "<<input_string<<endl;
+			fou<<"---------------ERROR!-----------------"<<endl;
 			error();
-			return; 
+			exit(0); 
 		} 
 	}
 	
@@ -840,7 +868,6 @@ void MonoDevelop::syntaxProgress(){
 	
 	for(int i=0;i<nonterminal_num;i++){  // 为每个非终结符构造First集合 
 		constructFirst(nonterminal_table[i]);
-//		cout<<"______"<<nonterminal_table[i]<<"______"<<endl;
 	}
 	
 //	printFirst();
@@ -853,7 +880,6 @@ void MonoDevelop::syntaxProgress(){
 		}
 		constructFollow(nonterminal_table[i]);
 		
-//		cout<<"______"<<nonterminal_table[i]<<"______"<<endl;
 	}
 //	printFollow();
 	
@@ -870,11 +896,12 @@ void MonoDevelop::syntaxProgress(){
 int main(){
 	MonoDevelop developer = MonoDevelop();
 //	cout<<"Begin LexProgress"<<endl;
-	developer.lexProgress("example.c-");
+	developer.lexProgress("/testfile/example.c-");
+//	developer.printTokens();
 //	cout<<"Begin syntaxProgress"<<endl;
 	developer.syntaxProgress();
-	cout<<"program"<<endl;
+//	cout<<"program"<<endl;
 	developer.syntax_tree->printTree(1, developer.syntax_tree->root);
-//	system("pause");
+
 	return 0;
 }

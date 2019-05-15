@@ -1,29 +1,16 @@
-/* A program to perform finding the maximum number of the three. */
+/* A program to perform finding the greatest common divisor of the two. */
 
-int max(int x, int y, int z)
+int gcd(int u,int v)
 {
-	int result;
-	if (x > y)
-		if (z > result)
-			result = z;
-	else
-		result =y;
-	
+	if(v==0)return u;
+	else return gcd(v,u-u/v*v);
 }
+
 
 void main(void)
 {
-	int a;
-	int b;
-	int c;
-	/* int d; */
-	a = input();
-	b = input();
-	c = input();
-	output(max(a, b, c));
-	
-	/*
-	d = 2 * max(a, b, c);
-	output(d);
-	*/
+	int x;int y;
+	x=input();
+	y=intput();
+	output(gcd(x,y));
 }
